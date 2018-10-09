@@ -7,7 +7,8 @@
 
 """
 import sys
-
+from timeit import default_timer as timer
+# import time
 
 def alphabetize(string):
     """ alphabetize
@@ -20,7 +21,7 @@ def alphabetize(string):
         abc
 
     """
-    return "".join(sorted(string.lower()))
+    return "".join(sorted(string))
 
 
 def find_anagrams(words):
@@ -35,11 +36,17 @@ def find_anagrams(words):
         {'dgo': ['dog'], 'act': ['cat', 'act']}
 
     """
-    anagrams = {
-        alphabetize(word): [
-            w for w in words
-            if alphabetize(w) == alphabetize(word)]
-        for word in words}
+    anagrams = {}
+    for word in words:
+        a_word = alphabetize(word)
+        for w in words:
+            if alphabetize(w) == a_word:
+                if a_word not in anagrams:
+                    anagrams[a_word] = [w]
+                elif a_word in anagrams and w not in anagrams[a_word]:
+                    anagrams[a_word].append(w)
+                else:
+                    continue  
     return anagrams
 
 
@@ -51,4 +58,4 @@ if __name__ == "__main__":
     else:
         with open(sys.argv[1], 'r') as handle:
             words = handle.read().split()
-            print find_anagrams(words)
+            find_anagrams(words)
